@@ -6,24 +6,10 @@ import {
   CardContent,
   CardActions,
   Chip,
-  Button,
   Grid,
-  Table,
   Stack,
-  Paper,
-  Avatar,
-  Popover,
-  Checkbox,
-  TableRow,
-  MenuItem,
-  TableBody,
-  TableCell,
   Container,
   Typography,
-  ListItem,
-  IconButton,
-  TableContainer,
-  TablePagination,
 } from '@mui/material';
 
 // sections
@@ -42,8 +28,17 @@ export default function SearchPage() {
 
 
   const handleFilterByCode = (event) => {
-    setFilterCode(event.target.value);
+    const { value } = event.target;
+    handleSearch(value);
   };
+
+  const handleSearch = (searchValue) => {
+    setFilterCode(searchValue);
+
+    if (searchValue.length > 3) {
+      console.log(`Searching for ... ${searchValue}`);
+    }
+  }
 
 
   return (
@@ -86,34 +81,32 @@ export default function SearchPage() {
                     Characteristics
                   </Typography>
                   <Typography variant="body2" gutterBottom>
-                    {sampleCharacteristics.map((character) => {
-                      return (
+                    {sampleCharacteristics.map(
+                      (characteristic, index) =>
                         <Chip 
-                          label={character} size="small" variant="outlined"
-                          component="a"
-                          href="#chip-click"
+                          key={ index }
+                          label={characteristic} size="small" variant="outlined"
                           sx={{ margin: 0.5 }} 
                           clickable
+                          onClick={() => handleSearch(characteristic)}
                         />
-                      );
-                    })}
+                    )}
                   </Typography>
 
                   <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                     Similar Codes
                   </Typography>
                   <Typography variant="body2">
-                    {sampleSimilarCodes.slice(0, Math.min(10, sampleSimilarCodes.length)).map((character) => {
-                      return (
+                    {sampleSimilarCodes.slice(0, Math.min(10, sampleSimilarCodes.length)).map
+                    ((code, index) => 
                         <Chip
-                          label={character} size="small" variant="outlined"
-                          component="a"
-                          href="#chip-click"
+                          key={index}
+                          label={code} size="small" variant="outlined"
                           sx={{ margin: 0.5 }}
                           clickable
+                          onClick={() => handleSearch(code)}
                         />
-                      );
-                    })}
+                    )}
                   </Typography>
                 </CardContent>
               </CardActions>
