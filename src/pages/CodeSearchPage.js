@@ -11,6 +11,7 @@ import {
   Container,
   Typography,
 } from '@mui/material';
+import { ICD_SERVICE  } from '../services/IcdService';
 
 // sections
 import { SearchListToolbar } from '../sections/@dashboard/search';
@@ -19,13 +20,17 @@ import { SearchListToolbar } from '../sections/@dashboard/search';
 // ----------------------------------------------------------------------
 
 export default function SearchPage() {
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [results, setResults] = useState({
+    'codeType': '...',
+    'description': '...'
+  });
 
-  const [filterCode, setFilterCode] = useState('');
+  const [filterCode, setFilterCode] = useState('Code');
 
   const sampleCharacteristics = ['Bacterial', 'Meningitis', 'Salmonella'];
   const sampleSimilarCodes = ['A020', 'A021', 'A0220', 'A0222', 'A0223', 'A0224', 'A020', 'A021', 'A0220', 'A0222', 'A0223', 'A0224'];
-  const codeSets = ['ICD-10-CM', 'ICD-10-PCS', 'HCPCS', 'CPT'];
-
 
   const handleFilterByCode = (event) => {
     const { value } = event.target;
@@ -37,6 +42,24 @@ export default function SearchPage() {
 
     if (searchValue.length > 3) {
       console.log(`Searching for ... ${searchValue}`);
+
+      setIsLoading(true);
+
+      fetch(ICD_SERVICE('code', searchValue))
+        .then(res => res.json())
+        .then(
+          (result) => {
+            setIsLoading(false);
+            setResults(result);
+
+            console.log(result)
+          },
+
+          (error) => {
+            setIsLoading(false);
+            setError(error);
+          }
+        )
     }
   }
 
@@ -67,11 +90,11 @@ export default function SearchPage() {
                 </Typography>
 
                 <Typography variant="h5" component="div">
-                  { filterCode } ({codeSets[0]})
+                  { filterCode } ({results.codeType})
                 </Typography>
 
                 <Typography variant="body2">
-                  Salmonella meningitis - is a very rare form of meningitis caused by salmonella bacteria.
+                  {results.description}
                 </Typography>
                 
               </CardContent>
