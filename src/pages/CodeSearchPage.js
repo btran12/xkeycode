@@ -10,6 +10,7 @@ import {
   Stack,
   Container,
   Typography,
+  Skeleton
 } from '@mui/material';
 import { ICD_SERVICE  } from '../services/IcdService';
 
@@ -23,14 +24,19 @@ export default function SearchPage() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState({
+    'code': '',
     'codeType': '...',
-    'description': '...'
+    'description': '...',
+    'characteristics': [],
+    'similarCodes': []
   });
 
-  const [filterCode, setFilterCode] = useState('Code');
+  const [filterCode, setFilterCode] = useState('');
+  const [searchOption, setSearchOption] = useState('code');
 
-  const sampleCharacteristics = ['Bacterial', 'Meningitis', 'Salmonella'];
-  const sampleSimilarCodes = ['A020', 'A021', 'A0220', 'A0222', 'A0223', 'A0224', 'A020', 'A021', 'A0220', 'A0222', 'A0223', 'A0224'];
+  const handleSearchOptionChange = (event) => {
+    setSearchOption(event.target.value);
+  }
 
   const handleFilterByCode = (event) => {
     const { value } = event.target;
@@ -45,7 +51,7 @@ export default function SearchPage() {
 
       setIsLoading(true);
 
-      fetch(ICD_SERVICE('code', searchValue))
+      fetch(ICD_SERVICE(searchOption, searchValue))
         .then(res => res.json())
         .then(
           (result) => {
@@ -78,7 +84,11 @@ export default function SearchPage() {
         </Stack>
 
         <Card>
-          <SearchListToolbar filterCode={filterCode} onFilterCode={handleFilterByCode} />
+          <SearchListToolbar 
+            filterCode={filterCode} 
+            onFilterCode={handleFilterByCode}
+            searchOption={searchOption}
+            onSearchOptionChange={handleSearchOptionChange} />
         </Card>
         
         <Grid container mt={1}>
@@ -90,11 +100,21 @@ export default function SearchPage() {
                 </Typography>
 
                 <Typography variant="h5" component="div">
-                  { filterCode } ({results.codeType})
+                  {results.code.length === 0 || isLoading
+                    ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} width={200}/> 
+                    : `${filterCode} (${results.codeType})`
+                  }
                 </Typography>
 
                 <Typography variant="body2">
-                  {results.description}
+                  {results.code.length === 0 || isLoading
+                    ? 
+                      <>
+                        <Skeleton variant="text" sx={{ fontSize: '1rem' }} /> 
+                        <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+                      </>
+                    : results.description
+                  }
                 </Typography>
                 
               </CardContent>
@@ -104,15 +124,21 @@ export default function SearchPage() {
                     Characteristics
                   </Typography>
                   <Typography variant="body2" gutterBottom>
-                    {sampleCharacteristics.map(
-                      (characteristic, index) =>
-                        <Chip 
-                          key={ index }
-                          label={characteristic} size="small" variant="outlined"
-                          sx={{ margin: 0.5 }} 
-                          clickable
-                          onClick={() => handleSearch(characteristic)}
-                        />
+                    {results.code.length === 0 || isLoading
+                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+                      : results.characteristics.map(
+                        (characteristic, index) =>
+                          <Chip 
+                            key={ index }
+                            label={characteristic} size="small" variant="outlined"
+                            sx={{ margin: 0.5 }} 
+                            clickable
+                            onClick={() => {
+                                setSearchOption('word')
+                                handleSearch(characteristic)
+                              }
+                            }
+                          />
                     )}
                   </Typography>
 
@@ -120,15 +146,21 @@ export default function SearchPage() {
                     Similar Codes
                   </Typography>
                   <Typography variant="body2">
-                    {sampleSimilarCodes.slice(0, Math.min(10, sampleSimilarCodes.length)).map
-                    ((code, index) => 
-                        <Chip
-                          key={index}
-                          label={code} size="small" variant="outlined"
-                          sx={{ margin: 0.5 }}
-                          clickable
-                          onClick={() => handleSearch(code)}
-                        />
+                    {results.code.length === 0 || isLoading || results.similarCodes.length === 0
+                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+                      : results.similarCodes.slice(0, Math.min(10, results.similarCodes.length)).map
+                        ((code, index) => 
+                            <Chip
+                              key={index}
+                              label={code} size="small" variant="outlined"
+                              sx={{ margin: 0.5 }}
+                              clickable
+                              onClick={() => {
+                                  setSearchOption('code')
+                                  handleSearch(code)
+                                }
+                              }
+                            />
                     )}
                   </Typography>
                 </CardContent>
@@ -142,9 +174,14 @@ export default function SearchPage() {
                 <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
                   Details
                 </Typography>
-                <Typography variant="body2">
-                  Ipsum lorem
-                </Typography>
+                <Stack spacing={1}>
+                  <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+                  <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+                  <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+                  <Skeleton variant="rounded" height={60} />
+                  <Skeleton variant="rounded" height={60} />
+                  <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+                </Stack>
               </CardContent>
             </Card>
           </Grid>
