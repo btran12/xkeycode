@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
+import { Toolbar, OutlinedInput, InputAdornment, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Stack } from '@mui/material';
 // component
 import Iconify from '../../../components/iconify';
 
@@ -21,7 +21,7 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
     duration: theme.transitions.duration.shorter,
   }),
   '&.Mui-focused': {
-    width: '100%',  // focused size
+    width: '70%',  // focused size
     boxShadow: theme.customShadows.z8,
   },
   '& fieldset': {
@@ -37,9 +37,10 @@ SearchListToolbar.propTypes = {
   onFilterCode: PropTypes.func,
 };
 
-export default function SearchListToolbar({ filterCode, onFilterCode }) {
+export default function SearchListToolbar({ filterCode, onFilterCode, searchOption, onSearchOptionChange }) {
   return (
     <StyledRoot>
+      
       <StyledSearch
         value={filterCode}
         onChange={onFilterCode}
@@ -50,6 +51,20 @@ export default function SearchListToolbar({ filterCode, onFilterCode }) {
           </InputAdornment>
         }
       />
+
+      <FormControl>
+        <FormLabel id="demo-row-radio-buttons-group-label">Search Mode</FormLabel>
+        <RadioGroup
+          row
+          name="row-radio-buttons-group"
+          value={searchOption}
+          onChange={onSearchOptionChange}
+        >
+          <FormControlLabel value="code" control={<Radio size="small"/>} label="Code" />
+          <FormControlLabel value="word" control={<Radio size="small"/>} label="Word" />
+        </RadioGroup>
+      </FormControl>
+
     </StyledRoot>
   );
 }
