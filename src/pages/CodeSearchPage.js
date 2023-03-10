@@ -120,23 +120,19 @@ export default function SearchPage() {
                   Code Definition
                 </Typography>
 
-                <Typography variant="h5" component="div">
-                  {codeResults.code.length === 0 || isCodeLoading
-                    ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} width={200} animation={isCodeLoading} /> 
-                    : `${codeResults.code} (${codeResults.codeType})`
-                  }
-                </Typography>
+                {codeResults.code.length === 0 || isCodeLoading
+                  ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} width={200} animation={isCodeLoading} /> 
+                  : <Typography variant="h5" component="div"> {codeResults.code} ({codeResults.codeType}) </Typography>
+                }
 
-                <Typography variant="body2">
-                  {codeResults.code.length === 0 || isCodeLoading
-                    ? 
-                      <>
-                        <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isCodeLoading} /> 
-                        <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isCodeLoading} />
-                      </>
-                    : codeResults.description
-                  }
-                </Typography>
+                {codeResults.code.length === 0 || isCodeLoading
+                  ? 
+                    <>
+                      <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isCodeLoading} /> 
+                      <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isCodeLoading} />
+                    </>
+                : <Typography variant="body2"> {codeResults.description} </Typography>
+                }
                 
               </CardContent>
               <CardActions>
@@ -194,54 +190,55 @@ export default function SearchPage() {
                     : wordResults.word
                   }
                 </Typography>
-                <Typography variant="body2">
+                
                   {wordResults.word.length === 0 || isWordLoading
                     ?
                     <>
                       <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
                       <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
                     </>
-                    : wordResults.definition
+                  : <Typography variant="body2"> {wordResults.definition} </Typography>
                   }
-                </Typography>
               </CardContent>
               <CardActions>
                 <CardContent>
                   <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                     Related Diagnosis Codes
                   </Typography>
+                  
                   <Typography variant="body2" gutterBottom>
                     {wordResults.dxCodes.length === 0 || isWordLoading
                       ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
-                      : wordResults.dxCodes.map(
-                        (code, index) =>
-                          <Chip
-                            key={index}
-                            label={code} size="small" variant="outlined"
-                            sx={{ margin: 0.5 }}
-                            clickable
-                            onClick={() => handleSearch('code', code)}
-                          />
-                      )}
+                      : 
+                          wordResults.dxCodes.map(
+                          (code, index) =>
+                            <Chip
+                              key={index}
+                              label={code} size="small" variant="outlined"
+                              sx={{ margin: 0.5 }}
+                              clickable
+                              onClick={() => handleSearch('code', code)}
+                            />
+                          )
+                      }
                   </Typography>
 
                   <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                     Related Procedure Codes
                   </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    {wordResults.sgCodes.length === 0 || isWordLoading
-                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
-                      : wordResults.sgCodes.map(
-                        (code, index) =>
-                          <Chip
-                            key={index}
-                            label={code} size="small" variant="outlined"
-                            sx={{ margin: 0.5 }}
-                            clickable
-                            onClick={() => handleSearch('code', code)}
-                          />
-                      )}
-                  </Typography>
+                  
+                  {wordResults.sgCodes.length === 0 || isWordLoading
+                    ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
+                    : wordResults.sgCodes.map(
+                      (code, index) =>
+                        <Chip
+                          key={index}
+                          label={code} size="small" variant="outlined"
+                          sx={{ margin: 0.5 }}
+                          clickable
+                          onClick={() => handleSearch('code', code)}
+                        />
+                    )}
                 </CardContent>
               </CardActions>
             </Card>
