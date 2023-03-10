@@ -35,6 +35,8 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 SearchListToolbar.propTypes = {
   filterCode: PropTypes.string,
   onFilterCode: PropTypes.func,
+  searchOption: PropTypes.string,
+  onSearchOptionChange: PropTypes.func
 };
 
 export default function SearchListToolbar({ filterCode, onFilterCode, searchOption, onSearchOptionChange }) {
@@ -44,7 +46,7 @@ export default function SearchListToolbar({ filterCode, onFilterCode, searchOpti
       <StyledSearch
         value={filterCode}
         onChange={onFilterCode}
-        placeholder="Search code..."
+        placeholder=""
         startAdornment={
           <InputAdornment position="start">
             <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
@@ -53,7 +55,7 @@ export default function SearchListToolbar({ filterCode, onFilterCode, searchOpti
       />
 
       <FormControl>
-        <FormLabel id="demo-row-radio-buttons-group-label">Search Mode</FormLabel>
+        <FormLabel id="demo-row-radio-buttons-group-label">Search Option</FormLabel>
         <RadioGroup
           row
           name="row-radio-buttons-group"
