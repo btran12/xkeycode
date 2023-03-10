@@ -22,7 +22,8 @@ import { SearchListToolbar } from '../sections/@dashboard/search';
 
 export default function SearchPage() {
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isCodeLoading, setIsCodeLoading] = useState(false);
+  const [isWordLoading, setIsWordLoading] = useState(false);
   const [codeResults, setCodeResults] = useState({
     'code': '',
     'codeType': '...',
@@ -58,17 +59,22 @@ export default function SearchPage() {
     if (searchValue.length > 3) {
       console.log(`Searching for ${searchOption}... ${searchValue}`);
 
-      setIsLoading(true);
+      if (searchOption === 'code') {
+        setIsCodeLoading(true);
+      } else {
+        setIsWordLoading(true);
+      }
 
       fetch(ICD_SERVICE(searchOption, searchValue))
         .then(res => res.json())
         .then(
           (result) => {
-            setIsLoading(false);
-
+            
             if (searchOption === 'code') {
+              setIsCodeLoading(false);
               setCodeResults(result);
             } else {
+              setIsWordLoading(false);
               setWordResults(result);
             }
             
@@ -76,7 +82,7 @@ export default function SearchPage() {
           },
 
           (error) => {
-            setIsLoading(false);
+            setIsCodeLoading(false);
             setError(error);
             console.error(error);
           }
@@ -115,18 +121,18 @@ export default function SearchPage() {
                 </Typography>
 
                 <Typography variant="h5" component="div">
-                  {codeResults.code.length === 0 || isLoading
-                    ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} width={200} animation={isLoading} /> 
+                  {codeResults.code.length === 0 || isCodeLoading
+                    ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} width={200} animation={isCodeLoading} /> 
                     : `${codeResults.code} (${codeResults.codeType})`
                   }
                 </Typography>
 
                 <Typography variant="body2">
-                  {codeResults.code.length === 0 || isLoading
+                  {codeResults.code.length === 0 || isCodeLoading
                     ? 
                       <>
-                        <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isLoading} /> 
-                        <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isLoading} />
+                        <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isCodeLoading} /> 
+                        <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isCodeLoading} />
                       </>
                     : codeResults.description
                   }
@@ -139,8 +145,8 @@ export default function SearchPage() {
                     Characteristics
                   </Typography>
                   <Typography variant="body2" gutterBottom>
-                    {codeResults.code.length === 0 || isLoading
-                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isLoading} />
+                    {codeResults.code.length === 0 || isCodeLoading
+                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isCodeLoading} />
                       : codeResults.characteristics.map(
                         (characteristic, index) =>
                           <Chip 
@@ -157,8 +163,8 @@ export default function SearchPage() {
                     Similar Codes
                   </Typography>
                   <Typography variant="body2">
-                    {codeResults.code.length === 0 || isLoading || codeResults.similarCodes.length === 0
-                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isLoading} />
+                    {codeResults.code.length === 0 || isCodeLoading || codeResults.similarCodes.length === 0
+                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isCodeLoading} />
                       : codeResults.similarCodes.slice(0, Math.min(10, codeResults.similarCodes.length)).map
                         ((code, index) => 
                             <Chip
@@ -183,17 +189,17 @@ export default function SearchPage() {
                 </Typography>
 
                 <Typography variant="h5" component="div">
-                  {wordResults.word.length === 0 || isLoading
-                    ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isLoading}/>
+                  {wordResults.word.length === 0 || isWordLoading
+                    ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading}/>
                     : wordResults.word
                   }
                 </Typography>
                 <Typography variant="body2">
-                  {wordResults.word.length === 0 || isLoading
+                  {wordResults.word.length === 0 || isWordLoading
                     ?
                     <>
-                      <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isLoading} />
-                      <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isLoading} />
+                      <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
+                      <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
                     </>
                     : wordResults.definition
                   }
@@ -205,8 +211,8 @@ export default function SearchPage() {
                     Related Diagnosis Codes
                   </Typography>
                   <Typography variant="body2" gutterBottom>
-                    {wordResults.dxCodes.length === 0 || isLoading
-                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isLoading} />
+                    {wordResults.dxCodes.length === 0 || isWordLoading
+                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
                       : wordResults.dxCodes.map(
                         (code, index) =>
                           <Chip
@@ -223,8 +229,8 @@ export default function SearchPage() {
                     Related Procedure Codes
                   </Typography>
                   <Typography variant="body2" gutterBottom>
-                    {wordResults.sgCodes.length === 0 || isLoading
-                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isLoading} />
+                    {wordResults.sgCodes.length === 0 || isWordLoading
+                      ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
                       : wordResults.sgCodes.map(
                         (code, index) =>
                           <Chip
