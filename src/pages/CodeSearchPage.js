@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 // @mui
 import {
   Card,
@@ -21,7 +21,8 @@ import { SearchListToolbar } from '../sections/@dashboard/search';
 // ----------------------------------------------------------------------
 
 export default function SearchPage() {
-  const [error, setError] = useState(null);
+  const MAX_CODES_TO_DISPLAY = 30;
+
   const [isCodeLoading, setIsCodeLoading] = useState(false);
   const [isWordLoading, setIsWordLoading] = useState(false);
   const [codeResults, setCodeResults] = useState({
@@ -83,7 +84,6 @@ export default function SearchPage() {
 
           (error) => {
             setIsCodeLoading(false);
-            setError(error);
             console.error(error);
           }
         )
@@ -161,7 +161,7 @@ export default function SearchPage() {
                   <Typography variant="body2">
                     {codeResults.code.length === 0 || isCodeLoading || codeResults.similarCodes.length === 0
                       ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isCodeLoading} />
-                      : codeResults.similarCodes.slice(0, Math.min(10, codeResults.similarCodes.length)).map
+                      : codeResults.similarCodes.slice(0, Math.min(MAX_CODES_TO_DISPLAY, codeResults.similarCodes.length)).map
                         ((code, index) => 
                             <Chip
                               key={index}
@@ -210,7 +210,7 @@ export default function SearchPage() {
                     {wordResults.dxCodes.length === 0 || isWordLoading
                       ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
                       : 
-                          wordResults.dxCodes.map(
+                          wordResults.dxCodes.slice(0, Math.min(MAX_CODES_TO_DISPLAY, wordResults.dxCodes.length)).map(
                           (code, index) =>
                             <Chip
                               key={index}
@@ -229,7 +229,7 @@ export default function SearchPage() {
                   
                   {wordResults.sgCodes.length === 0 || isWordLoading
                     ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} animation={isWordLoading} />
-                    : wordResults.sgCodes.map(
+                    : wordResults.sgCodes.slice(0, Math.min(MAX_CODES_TO_DISPLAY, wordResults.sgCodes.length)).map(
                       (code, index) =>
                         <Chip
                           key={index}

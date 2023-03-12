@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Toolbar, OutlinedInput, InputAdornment, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Stack } from '@mui/material';
+import { Toolbar, OutlinedInput, InputAdornment, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 // component
 import Iconify from '../../../components/iconify';
 
